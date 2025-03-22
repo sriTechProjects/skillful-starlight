@@ -25,7 +25,7 @@ const Skills = () => {
   const skillCategories = [
     {
       name: "Frontend Development",
-      type: "frontend",
+      type: "frontend" as const,
       skills: [
         { name: "React", level: 5, icon: <Code size={18} /> },
         { name: "JavaScript", level: 5, icon: <FileJson size={18} /> },
@@ -38,7 +38,7 @@ const Skills = () => {
     },
     {
       name: "Backend Development",
-      type: "backend",
+      type: "backend" as const,
       skills: [
         { name: "Node.js", level: 4, icon: <Server size={18} /> },
         { name: "Express", level: 4, icon: <Server size={18} /> },
@@ -49,7 +49,7 @@ const Skills = () => {
     },
     {
       name: "Tools & Platforms",
-      type: "tools",
+      type: "tools" as const,
       skills: [
         { name: "Git/GitHub", level: 4, icon: <GitBranch size={18} /> },
         { name: "VS Code", level: 5, icon: <Terminal size={18} /> },
@@ -61,7 +61,7 @@ const Skills = () => {
     },
     {
       name: "Soft Skills",
-      type: "other",
+      type: "other" as const,
       skills: [
         { name: "Problem Solving", level: 5, icon: <Check size={18} /> },
         { name: "Team Collaboration", level: 4, icon: <Check size={18} /> },
@@ -71,6 +71,31 @@ const Skills = () => {
       ]
     }
   ];
+
+  // Add custom animations for skills visualization
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: { 
+      scale: 1, 
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    },
+    hover: { 
+      scale: 1.05,
+      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
+      transition: { type: "spring", stiffness: 400, damping: 10 }
+    }
+  };
 
   return (
     <PageTransition>
@@ -100,13 +125,17 @@ const Skills = () => {
                   {category.name}
                 </h2>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <motion.div 
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {category.skills.map((skill, skillIndex) => (
                     <motion.div
                       key={skill.name}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
+                      variants={itemVariants}
+                      whileHover="hover"
                     >
                       <SkillBadge
                         name={skill.name}
@@ -116,7 +145,7 @@ const Skills = () => {
                       />
                     </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>

@@ -20,7 +20,7 @@ const projectsData = [
       "Created reusable component system",
       "Integrated payment processing"
     ],
-    category: "major"
+    category: "major" as const
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const projectsData = [
       "Implemented geolocation features",
       "Applied UI/UX principles for data visualization"
     ],
-    category: "mini"
+    category: "mini" as const
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ const projectsData = [
       "Created user authentication",
       "Built real-time database synchronization"
     ],
-    category: "major"
+    category: "major" as const
   },
   {
     id: 4,
@@ -65,7 +65,7 @@ const projectsData = [
       "Implemented responsive design",
       "Optimized for accessibility"
     ],
-    category: "mini"
+    category: "mini" as const
   },
   {
     id: 5,
@@ -79,7 +79,7 @@ const projectsData = [
       "Designed intuitive visualization system",
       "Practiced advanced JavaScript concepts"
     ],
-    category: "practice"
+    category: "practice" as const
   },
   {
     id: 6,
@@ -93,12 +93,14 @@ const projectsData = [
       "Implemented data visualization",
       "Created user authentication and profiles"
     ],
-    category: "major"
+    category: "major" as const
   }
 ];
 
+// We'll add this new modal state and handlers
 const Projects = () => {
   const [filter, setFilter] = useState('all');
+  const [selectedProject, setSelectedProject] = useState(null);
   
   const filteredProjects = filter === 'all' 
     ? projectsData 
@@ -110,6 +112,14 @@ const Projects = () => {
     { value: 'major', label: 'Major Projects' },
     { value: 'practice', label: 'Tech Practice' }
   ];
+
+  const openProjectDetail = (project) => {
+    setSelectedProject(project);
+  };
+
+  const closeProjectDetail = () => {
+    setSelectedProject(null);
+  };
 
   return (
     <PageTransition>
@@ -150,13 +160,14 @@ const Projects = () => {
           </div>
           
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${selectedProject ? 'opacity-20 blur-sm' : ''}`}>
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                onClick={() => openProjectDetail(project)}
               >
                 <ProjectCard
                   title={project.title}
@@ -176,6 +187,86 @@ const Projects = () => {
             <div className="text-center py-16">
               <p className="text-gray-400 text-lg">No projects found with the selected filter.</p>
             </div>
+          )}
+
+          {/* Project Detail Modal */}
+          {selectedProject && (
+            <motion.div 
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              onClick={closeProjectDetail}
+            >
+              <div 
+                className="glass-card max-w-4xl w-full rounded-xl overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {selectedProject.imageUrl && (
+                  <img 
+                    src={selectedProject.imageUrl} 
+                    alt={selectedProject.title} 
+                    className="w-full h-64 object-cover"
+                  />
+                )}
+                <div className="p-8">
+                  <h2 className="text-3xl font-display font-bold mb-4 text-white">{selectedProject.title}</h2>
+                  <p className="text-gray-300 mb-6">{selectedProject.description}</p>
+                  
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold text-white mb-3">Technologies</h3>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {selectedProject.technologies.map((tech, i) => (
+                        <span 
+                          key={i}
+                          className="text-sm py-1.5 px-3 rounded-full bg-white/10 text-gray-200"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold text-white mb-3">Key Outcomes</h3>
+                    <ul className="text-gray-300 space-y-2 list-disc pl-5">
+                      {selectedProject.outcomes.map((outcome, i) => (
+                        <li key={i}>{outcome}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div className="flex gap-4 mt-6">
+                    {selectedProject.githubUrl && (
+                      <a 
+                        href={selectedProject.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      >
+                        View Code
+                      </a>
+                    )}
+                    {selectedProject.liveUrl && (
+                      <a 
+                        href={selectedProject.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                      >
+                        Live Demo
+                      </a>
+                    )}
+                    <button 
+                      onClick={closeProjectDetail}
+                      className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors ml-auto"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           )}
         </div>
       </div>
