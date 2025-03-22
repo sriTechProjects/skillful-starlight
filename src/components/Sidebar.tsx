@@ -17,7 +17,7 @@ const Sidebar = () => {
   
   return (
     <motion.div 
-      className="glass fixed left-0 top-0 bottom-0 z-40 flex flex-col items-center py-8 overflow-hidden"
+      className="glass fixed left-0 top-0 bottom-0 z-40 flex flex-col items-center py-8 overflow-visible"
       initial={{ width: '4rem' }}
       animate={{ width: '4rem' }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
