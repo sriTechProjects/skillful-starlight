@@ -45,13 +45,13 @@ const Sidebar = () => {
                 </div>
                 {expandedIndex === index && (
                   <motion.div
-                    className="absolute left-full flex whitespace-nowrap"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 12 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    className="absolute right-full flex whitespace-nowrap z-50"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: -12 }}
+                    exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="glass text-white py-2 px-4 rounded-r-lg text-sm font-medium">
+                    <div className="glass text-white py-2 px-4 rounded-l-lg text-sm font-medium">
                       {item.name}
                     </div>
                   </motion.div>
